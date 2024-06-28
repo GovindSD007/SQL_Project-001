@@ -1,0 +1,42 @@
+#connect data on AWS from Postgresql using python
+import psycopg2
+
+# Database connection parameters
+hostname = 'your-db-instance.cusnliwgulh6.us-west-2.rds.amazonaws.com'
+port = '5432'
+dbname = 'your_database_name'
+username = 'your_username'
+password = 'your_password'
+
+# Connect to the database
+conn = psycopg2.connect(
+    host=hostname,
+    port=port,
+    dbname=dbname,
+    user=username,
+    password=password
+)
+
+# Create a cursor object
+cur = conn.cursor()
+
+# Execute your query
+query = """
+SELECT customer_name, SUM(amount) as total_spent
+FROM transactions
+WHERE place = 'Mumbai'
+  AND transaction_time BETWEEN '2024-01-01 00:00:00' AND '2024-12-31 23:59:59'
+GROUP BY customer_name
+ORDER BY total_spent DESC;
+"""
+
+cur.execute(query)
+
+# Fetch and print the results
+results = cur.fetchall()
+for row in results:
+    print(row)
+
+# Close the cursor and connection
+cur.close()
+conn.close()
