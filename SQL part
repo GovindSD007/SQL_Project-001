@@ -1,0 +1,38 @@
+CREATE TABLE transactions (
+    transaction_id SERIAL PRIMARY KEY,
+    customer_name VARCHAR(100),
+    place VARCHAR(100),
+    transaction_time TIMESTAMPTZ,
+    membership_type VARCHAR(50),
+    amount DECIMAL(10, 2),
+    product_id INT,
+    product_quantity INT
+);
+
+SELECT * FROM transactions;
+
+#specific time extracted 
+SELECT * 
+FROM transactions
+WHERE transaction_time BETWEEN '2024-01-01 00:00:00' AND '2024-12-31 23:59:59';
+
+#region specific 
+SELECT * 
+FROM transactions
+WHERE place = 'Mumbai';
+
+#aggregate the data 
+SELECT customer_name, SUM(amount) as total_spent
+FROM transactions
+WHERE place = 'Mumbai'
+  AND transaction_time BETWEEN '2024-01-01 00:00:00' AND '2024-12-31 23:59:59'
+GROUP BY customer_name
+ORDER BY total_spent DESC;
+
+#count of trasaction my membership type 
+SELECT membership_type, COUNT(*) as transaction_count
+FROM transactions
+WHERE place = 'Mumbai'
+  AND transaction_time BETWEEN '2024-01-01 00:00:00' AND '2024-12-31 23:59:59'
+GROUP BY membership_type
+ORDER BY transaction_count DESC;
